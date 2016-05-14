@@ -3,4 +3,4 @@
  */
 
 
-var backend = "http://axnsan.no-ip.org:27015/";
+var backend = "http://axnsan.no-ip.org:27015/api/";

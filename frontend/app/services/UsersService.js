@@ -18,6 +18,10 @@ unitaste.service("UsersService", function ($http) {
         return $http.post(backend + "logout", {});
     };
 
+    this.getProfile = function() {
+        return $http.get(backend + "user/profile", {});
+    };
+
     this.register = function (registerModel) {
         console.log("requesting register ...");
         return $http.post(backend + "register", registerModel);

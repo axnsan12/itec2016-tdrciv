@@ -33,3 +33,31 @@
   margin-top:5px;
   margin-bottom:5px;
 }
+.interests-wrapper {
+  margin:5px;
+}
+.interests-wrapper .interest{
+  display: inline-block;
+  padding:5px;
+  background: #e5e5e5;
+  margin:2px;
+}
+.clickable {
+  cursor: pointer;
+}
+
+.interests-wrapper .interest:hover{
+  background: #d5d5d5;
+}
+.highlight {
+  color:red;
+}
+
+.relative {
+  position: relative;
+}
+
+.autocomplete .ac-container {
+  left: 0 !important;
+  top: 34px !important;
+}
