@@ -1,0 +1,63 @@
+<div class="row">
+    <div class="col-md-4"></div>
+    <div class="well col-md-4">
+        <div>
+            <form
+                    class="form-group"
+                    ng-submit = "doLogin();"
+                    [ngFormModel]="loginForm">
+                <div class="row">
+                    <div class="col-xs-5 text-right">
+                        <label for="username">Username:</label>
+                    </div>
+                    <div class="col-xs-7">
+                        <input id="username"
+                               type="text"
+                               ng-model="model.username"
+                               placeholder="Your username"
+                               class="form-control"
+                               autofocus/>
+                    </div>
+                </div>
+                <div class="row verticallySpaced">
+                    <div class="col-xs-5 text-right">
+                        <label for="Username">Password:</label>
+                    </div>
+                    <div class="col-xs-7">
+                        <input
+                                id="password"
+                                type="password"
+                                ng-model="model.password"
+                                placeholder="Your password"
+                                class="form-control"
+                                autofocus/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-5"></div>
+                    <div class="col-xs-7">
+                        <div class="error" ng-if="errorMessage">
+                            {{errorMessage}}
+                        </div>
+                        <div class="waiting" ng-if="waiting">
+                            Please wait ...
+                        </div>
+                        <div class="success" ng-if="success">
+                            Successfully logged in!
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-5"></div>
+                    <div class="col-xs-7">
+                        <button class="btn btn-default" ng-disabled="waiting || isLoggedIn()">
+                            Login
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+    </div>
+    <div class="col-md-4"></div>
+</div>
