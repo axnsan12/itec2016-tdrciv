@@ -4,12 +4,14 @@ import sys
 from os import getenv
 from bottle import request, response
 from bottle.ext import sqlalchemy
-from sqlalchemy import create_engine, Column, Integer, Sequence, String
-from sqlalchemy.ext.declarative import declarative_base
 from beaker.middleware import SessionMiddleware
 from cork import Cork
 from cork.backends import SqlAlchemyBackend
 from cork import AAAException, AuthException
+
+from sqlalchemy import create_engine, Column, Integer, Sequence, String
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import scoped_session, sessionmaker
 
 app = bottle.default_app()
 bottle.debug(True)
@@ -23,7 +25,7 @@ def enable_cors():
 	response.headers['Access-Control-Allow-Origin'] = 'http://unified.tdr'
 	response.headers['Access-Control-Allow-Credentials'] = "true";
 	response.headers['Access-Control-Allow-Methods'] = 'POST, GET, OPTIONS'
-	response.headers['Access-Control-Allow-Headers'] = 'Origin, Accept, Cookie, Content-Type, X-Requested-With, X-CSRF-Token, Cookie'
+	response.headers['Access-Control-Allow-Headers'] = 'Origin, Accept, Cookie, Content-Type, X-Requested-With, X-CSRF-Token'
 
 @app.route("/<url:re:.+>", method=['OPTIONS'])
 def allow_options(url):
@@ -31,12 +33,12 @@ def allow_options(url):
 
 Base = declarative_base()
 
-connection_string = getenv('MYSQLCONNSTR_itec2016')
-arg_name = { 'Database': 'database', 'User Id': 'user', 'Data Source': 'host', 'Password': 'password' }
-kwargs = { arg_name[key] : val for (key, val) in [arg.split('=') for arg in connection_string.split(';')]}
-kwargs['port'] = 3306 if 'port' not in kwargs else kwargs['port']
+kwargs = { 'database': 'default', 'user': 'root', 'password': '', 'host': 'localhost', 'port': 3306 }
+if 'MYSQLCONNSTR_itec2016' in os.environ:
+	connection_string = getenv('MYSQLCONNSTR_itec2016')
+	arg_name = { 'Database': 'database', 'User Id': 'user', 'Data Source': 'host', 'Password': 'password' }
+	kwargs.update({ arg_name[key] : val for (key, val) in [arg.split('=') for arg in connection_string.split(';')]})
 connection_string = "mysql+mysqlconnector://{user}:{password}@{host}:{port}/{database}".format(**kwargs)
-print(connection_string)
 engine = create_engine(connection_string, echo=True)
 
 plugin = sqlalchemy.Plugin(
@@ -49,6 +51,23 @@ plugin = sqlalchemy.Plugin(
 )
 
 app.install(plugin)
+
+_sessionmaker = sessionmaker(bind=engine)
+session = None # type: Session
+@app.hook('before_request')
+def open_session():
+	global session
+	if session is not None:
+		session.close()
+		session = None
+	session = _sessionmaker()
+
+@app.hook('after_request')
+def close_session():
+	global session
+	if session is not None:
+		session.close()
+		session = None
 
 cork_mysql = SqlAlchemyBackend(connection_string, initialize=True)
 cork = Cork(backend=cork_mysql, email_sender='danpulea12@gmail.com', smtp_url='ssl://danpulea12@gmail.com:parola12@smtp.gmail.com:465')
