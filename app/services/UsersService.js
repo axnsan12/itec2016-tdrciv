@@ -9,7 +9,7 @@ unitaste.service("UsersService", function ($http) {
         return $http.post(backend + "login", loginModel);
     };
 
-    this.loggedInUser = function () {
+    this.isUserLoggedIn = function () {
         console.log("checking login");
         return $http.get(backend+"user");
     };

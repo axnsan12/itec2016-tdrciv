@@ -66,14 +66,14 @@
                 <div class="row">
                     <div class="col-xs-5"></div>
                     <div class="col-xs-7">
-                        <div class="error" ng-if="errorMessage">
+                        <div class="error-response" ng-if="errorMessage">
                             {{errorMessage}}
+                        </div>
+                        <div class="success-response" ng-if="successMessage">
+                            {{successMessage}}
                         </div>
                         <div class="waiting" ng-if="waiting">
                             Please wait ...
-                        </div>
-                        <div class="success" ng-if="success">
-                            Successfully logged in!
                         </div>
                     </div>
                 </div>

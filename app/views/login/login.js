@@ -17,34 +17,53 @@ angular.module('unitaste.login', ['ngRoute'])
         $scope.waiting = false;
         $scope.success = false;
         $scope.errorMessage = false;
-        $scope.model = {username:"axnsan", password:"parola"};
+        $scope.model = {username:"tdr", password:"parola"};
 
         $scope.doLogin = function () {
             if($scope.waiting) {
                 return;
             }
+            $scope.waiting  = true;
+            $scope.errorMessage = false;
             //$scope.waiting = true;
             console.log(1);
             UsersService.login($scope.model).then(function (data) {
                 console.log(data);
-                UsersService.loggedInUser().then(function (data) {
-                    console.log("loggedInUser");
+                $scope.waiting = false;
+                $scope.successMessage = "Successfully logged in! <br> Checking things ...";
+                console.log("sending login request ...");
+                UsersService.isUserLoggedIn().then(function (data) {
+                    console.log("you are logged bă");
                     console.log(data);
                     localStorage.setItem("loggedIn", "yes?");
+                    $scope.successMessage = "You will be redirected to home page in a few seconds ...";
+
                     $location.path( "/" );
+                    setTimeout(function() {
+                        console.log("rediect in plm");
+                        $location.path( "/" );
+
+                        console.log("rediect in plm");
+                    }, 3000);
                 }).catch(function (data) {
                     console.log("err2");
                     console.log(data);
+                    $scope.errorMessage = "Something went very wrong!";
                 });
             }).catch(function(data) {
                 console.log("err");
 
                 $scope.waiting = false;
-                if(data.status == 401) {
-                    $scope.errorMessage = "Invalid username or password!"
-                }
-                else {
-                    $scope.errorMessage = "An error occurred!";
+                switch(data.status) {
+                    case 401:
+                        $scope.errorMessage = "Invalid username or password!"
+                        break;
+                    case 400:
+                        $scope.errorMessage = "Invalid fields value!";
+                        break;
+                    default:
+                        $scope.errorMessage = "An error occurred! Try again!";
+                        break;
                 }
 
             });

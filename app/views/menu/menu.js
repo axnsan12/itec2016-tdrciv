@@ -27,4 +27,13 @@ unitaste.controller("MenuController", function($scope, UsersService) {
             console.log("cant logout");
         });
     };
+    
+    $scope.checkLogin = function () {
+        UsersService.isUserLoggedIn().then(function (data) {
+            console.log(dat);
+        }).catch(function (data) {
+            console.log("err");
+            console.log(data);
+        });
+    };
 });
