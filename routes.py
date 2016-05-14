@@ -6,9 +6,12 @@ import traceback
 from bottle import view, default_app
 from datetime import datetime
 
-from init import app, cork
+from init import app, cork, engine
 from cork import AAAException, AuthException
-from bottle import request, response
+from bottle import request, response, static_file
+from model import Profile, Event, Interest, Comment
+
+from sqlalchemy.orm import scoped_session, sessionmaker
 
 def format_response(func):
 	def wrapper(*args, **kwargs):
@@ -46,49 +49,69 @@ def format_response(func):
 
 authorize = cork.make_auth_decorator(role="user")
 
-@app.post('/register')
+@app.route("/", method=['GET'])
+def serve_index():
+	return static_file('index.html', root='frontend/app')
+
+@app.post('/api/register')
 @format_response
 def register():
 	"""Send out registration email"""
 	cork.register(request.json['username'], request.json['password'], request.json['email'])
 	return { 'success': True }
 
-@app.post('/login')
+@app.post('/api/login')
 @format_response
 def login():
 	if not cork.login(request.json['username'], request.json['password']):
 		raise AuthException("incorrect username/password pair")
 	return { 'success': True }
 
-@app.get('/activate/:registration_code')
+@app.get('/api/activate/:registration_code')
 @format_response
 def activate(registration_code):
 	cork.validate_registration(registration_code)
 	cork.list_users
 	return { 'success': True }
 
-@app.get('/user')
+@app.get('/api/user')
 @format_response
 def logged_in_user():
 	user = cork.current_user
 	return { 'username': user.username, 'email': user.email_addr, 'role': user.role }
 
-@app.post('/logout')
+@app.post('/api/logout')
 @format_response
 def logout():
 	cork.logout(success_redirect=None, fail_redirect=None)
 	return { 'success': True }
 
-@app.get('/users')
+@app.get('/api/users')
 @format_response
 def list_users():
 	cork.require(username=None, role="admin")
 	return { 'users': [{ 'username': user[0], 'role': user[1], 'email': user[2] } for user in cork.list_users()] }
 
 
+@app.get('/api/test_db')
+@format_response
+def test_db():
+	session = scoped_session(sessionmaker(bind=engine, autoflush=False))
+	p1 = Profile(name="profile1", username="axnsan")
+	p2 = Profile(name="profile2", username="tdr")
+	e = Event(name="event")
+	i1 = Interest(interest="interest1")
+	i2 = Interest(interest="interest2")
+	i3 = Interest(interest="interest3")
+	e.users[p1] = Comment(text="comment 1")
+	e.users[p2] = Comment(text="comment 2")
+	e.interests.append(i1)
+	e.interests.append(i3)
+	session.add(e)
+	session.commit()
+	return { 'success': True }
 
-
-@app.route('/test')
+@app.route('/api/test')
 def test():
 	return dict(
 		status='success',
@@ -109,3 +132,10 @@ def test():
 		}
 		]
 	)
+
+
+
+@app.route("/<url:path>", method=['GET'])
+def serve_frontend(url):
+	print(url)
+	return static_file(url, root='frontend/app')
