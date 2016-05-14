@@ -26,7 +26,6 @@ angular.module('unitaste.login', ['ngRoute'])
             $scope.waiting  = true;
             $scope.errorMessage = false;
             //$scope.waiting = true;
-            console.log(1);
             UsersService.login($scope.model).then(function (data) {
                 console.log(data);
                 $scope.waiting = false;
@@ -38,12 +37,12 @@ angular.module('unitaste.login', ['ngRoute'])
                     localStorage.setItem("loggedIn", "yes?");
                     $scope.successMessage = "You will be redirected to home page in a few seconds ...";
 
-                    $location.path( "/" );
+                    //$location.path( "/" );
                     setTimeout(function() {
-                        console.log("rediect in plm");
-                        $location.path( "/" );
+                        console.log("redirect in plm");
+                        window.location.href = "/";
 
-                        console.log("rediect in plm");
+                        console.log("redirect in plm");
                     }, 3000);
                 }).catch(function (data) {
                     console.log("err2");
