@@ -3,4 +3,5 @@ bottle-cork>=0.12
 sqlalchemy>=1.0.12
 bottle-sqlalchemy>=0.4.3
 --allow-external mysql-connector-python
-https://cdn.mysql.com/Downloads/Connector-Python/mysql-connector-python-1.0.12.tar.gz
+--find-links wheelhouse
+mysql-connector-python==2.0.4
