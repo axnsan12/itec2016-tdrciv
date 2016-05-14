@@ -2,8 +2,7 @@ bottle<1
 --allow-external mysql-connector-python
 --allow-external pycrypto
 --find-links wheelhouse
-pycrypto==2.6.1
 mysql-connector-python==2.0.4
-bottle-cork>=0.12
+bottle-cork==0.12.0
 sqlalchemy>=1.0.12
 bottle-sqlalchemy>=0.4.3
