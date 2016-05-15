@@ -1,3 +1,6 @@
+<div class="row text-center">
+    <h2>Login</h2>
+</div>
 <div class="row">
     <div class="col-md-4"></div>
     <div class="well col-md-4">
@@ -36,13 +39,13 @@
                 <div class="row">
                     <div class="col-xs-5"></div>
                     <div class="col-xs-7">
-                        <div class="error-response" ng-if="errorMessage">
+                        <div class="alert alert-danger" ng-if="errorMessage">
                             {{errorMessage}}
                         </div>
-                        <div class="error-response" ng-if="successMessage">
+                        <div class="alert  alert-success" ng-if="successMessage">
                             {{successMessage}}
                         </div>
-                        <div class="waiting" ng-if="waiting">
+                        <div class="alert alert-info" ng-if="waiting">
                             Please wait ...
                         </div>
                     </div>
