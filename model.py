@@ -82,7 +82,7 @@ class Profile(Base, _BaseMixin):
 	# columns
 	id = Column(Integer, primary_key=True, autoincrement=True)
 	user_id = Column(Integer, ForeignKey(User.__tablename__ + '.id', ondelete='CASCADE'), nullable=False)
-	name = Column(Unicode(128), unique=True)
+	name = Column(Unicode(128))
 	# relations
 	rel_profileevent = relationship("ProfileEvent", collection_class=attribute_mapped_collection('event'),
 								  cascade='all,delete-orphan',

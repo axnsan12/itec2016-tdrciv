@@ -90,7 +90,11 @@ def parse_interests(interests):
 			else:
 				deleted_interest_ids.append(interest['id'])
 		else:
-			new_interests.append(Interest(interest=interest['name']))
+			interest = init.session.query(Interest).filter(Interest.interest == interest['name']).one_or_none()
+			if interest is None:
+				new_interests.append(Interest(interest=interest['name']))
+			else:
+				interest_ids.append(interest.id)
 
 	return interest_ids, new_interests, deleted_interest_ids
 
@@ -197,7 +201,9 @@ def update_profile(user_id=-1):
 		if new_interests:
 			profile.interests.extend(new_interests)
 		if interest_ids:
-			init.session.add_all([ProfileInterest(profile_id=profile.id, interest_id=interest_id) for interest_id in interest_ids ])
+			results = init.session.query(ProfileInterest.interest_id).filter(ProfileInterest.profile_id == profile.id, ProfileInterest.interest_id.in_(interest_ids)).all()
+			existing_interest_ids = { r[0] for r in results }
+			init.session.add_all([ProfileInterest(profile_id=profile.id, interest_id=interest_id) for interest_id in set(interest_ids) - existing_interest_ids ])
 		if deleted_interest_ids:
 			init.session.query(ProfileInterest).filter(ProfileInterest.profile_id == profile.id, ProfileInterest.interest_id.in_(deleted_interest_ids)).delete(synchronize_session=False)
 			init.session.expire_all()
@@ -275,7 +281,10 @@ def create_event():
 		return { 'status': 'error', 'message': 'Event must target at least one interest', 'error': 'create_event_no_interests' }
 	if new_interests:
 		event.interests = new_interests
+	
 	comment = Comment(text=request.json['comment'])
+	if len(comment.text) == 0:
+		return { 'status': 'error', 'message': 'Event join comment must not be empty', 'error': 'create_event_no_comment' }
 	event.users[user.profile] = comment
 	event.start_time = start_time
 	init.session.add(event)
@@ -294,7 +303,7 @@ def join_event(id):
 	now = datetime.utcnow().replace(tzinfo=timezone.utc)
 	if event.start_time > now:
 		comment = Comment(text=request.json['comment'])
-		if not comment:
+		if len(comment.text) == 0:
 			return { 'status': 'error', 'message': 'Event join comment must not be empty', 'error': 'join_event_no_comment' }
 
 		if user.profile in event.users:

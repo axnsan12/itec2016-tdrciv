@@ -45,7 +45,7 @@ if 'MYSQLCONNSTR_itec2016' in os.environ:
 	arg_name = { 'Database': 'database', 'User Id': 'user', 'Data Source': 'host', 'Password': 'password' }
 	kwargs.update({ arg_name[key] : val for (key, val) in [arg.split('=') for arg in connection_string.split(';')]})
 connection_string = "mysql+mysqlconnector://{user}:{password}@{host}:{port}/{database}".format(**kwargs)
-engine = create_engine(connection_string, echo=True, pool_size=2, max_overflow=3)
+engine = create_engine(connection_string, echo=False, pool_size=2, max_overflow=3)
 
 plugin = sqlalchemy.Plugin(
 	engine, # SQLAlchemy engine created with create_engine function.
