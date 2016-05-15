@@ -88,3 +88,8 @@ session_opts = {
 }
 
 session_app = SessionMiddleware(app, session_opts)
+
+def wsgi_app():
+	"""Returns the application to make available through wfastcgi. This is used
+	when the site is published to Microsoft Azure."""
+	return app
