@@ -18,8 +18,8 @@ angular.module('unitaste.register', ['ngRoute', 'ngSanitize', 'MassAutoComplete'
         $scope.success = false;
         $scope.errorMessage = false;
         $scope.successMessage = false;
-        // $scope.model = {username:"", password:"", passwordAgain:"", email:"", displayName:""};
-        $scope.model = {username:"tdr", password:"parola", passwordAgain:"parola", email:"denis.tdr@gmail.com", displayName:"Denis TDR"};
+        $scope.model = {username:"", password:"", passwordAgain:"", email:"", displayName:""};
+        //$scope.model = {username:"tdr", password:"parola", passwordAgain:"parola", email:"denis.tdr@gmail.com", displayName:"Denis TDR"};
 
 
         injectInterestAutoComplete(this, $scope, UsersService, InterestsService);
