@@ -29,7 +29,7 @@ angular.module('unitaste.login', ['ngRoute'])
             UsersService.login($scope.model).then(function (data) {
                 console.log(data);
                 $scope.waiting = false;
-                $scope.successMessage = "Successfully logged in! <br> Checking things ...";
+                $scope.successMessage = "Successfully logged in! \n Checking things ...";
                 console.log("sending login request ...");
                 UsersService.isUserLoggedIn().then(function (data) {
                     console.log("you are logged bă");

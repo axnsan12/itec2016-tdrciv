@@ -18,6 +18,7 @@ angular.module('unitaste.register', ['ngRoute', 'ngSanitize', 'MassAutoComplete'
         $scope.success = false;
         $scope.errorMessage = false;
         $scope.successMessage = false;
+        // $scope.model = {username:"", password:"", passwordAgain:"", email:"", displayName:""};
         $scope.model = {username:"tdr", password:"parola", passwordAgain:"parola", email:"denis.tdr@gmail.com", displayName:"Denis TDR"};
 
 
@@ -47,11 +48,9 @@ angular.module('unitaste.register', ['ngRoute', 'ngSanitize', 'MassAutoComplete'
 
             UsersService.register($scope.model).then(function(data) {
                 $scope.waiting = false;
-                $scope.successMessage = "Registration successfully. You will be redirected to login in a few seconds ...";
-                
-                setTimeout(function() {
-                    window.location.href = "#/login";
-                }, 3000);
+                $scope.successMessage = "Registration successfully. Pleaase check your mail for activation link.";
+                clearInterstsAutoCompleteValues($scope);
+                $scope.model = {username:"", password:"", passwordAgain:"", email:"", displayName:""};
             }).catch(function (data) {
                 $scope.waiting = false;
                 switch (data.status) {
@@ -59,7 +58,8 @@ angular.module('unitaste.register', ['ngRoute', 'ngSanitize', 'MassAutoComplete'
                         $scope.errorMessage = "Invalid field values!";
                         break;
                     default:
-                        $scope.errorMessage = data.message;
+                        $scope.errorMessage = data.data.message;
+
                         break;
                 }
 

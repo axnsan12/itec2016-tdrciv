@@ -11,6 +11,15 @@ var someLog = function (log) {
 };
 
 
+var clearInterstsAutoCompleteValues = function($scope) {
+    $scope.loadedInterests = [];
+    $scope.tmpResults = [];
+    $scope.autoCompleteObject = {};
+    $scope.selectedExistingInterests = [];
+    $scope.selectedNonExistingInterests = [];
+    $scope.currentFakeIndex = -1;
+};
+
 var injectInterestAutoComplete = function (_this, $scope, UsersService, InterestsService) {
 
 

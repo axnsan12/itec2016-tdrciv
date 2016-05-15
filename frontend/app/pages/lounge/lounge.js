@@ -13,25 +13,36 @@ angular.module('unitaste.lounge', ['ngRoute', 'ngSanitize', 'MassAutoComplete'])
         });
     }])
 
-    .controller('LoungeController', function ($scope, EventsService, InterestsService) {
+    .controller('LoungeController', function ($scope, EventsService, InterestsService, $location) {
         console.log("lounge loaded");
 
+        $scope.joinErrorMessage = "";
+        $scope.joinSuccesMessage = "";
+        $scope.waiting = false;
+
         $scope.events = [];
-        $scope.joinComment = [];
+        $scope.joinComment = "";
         $scope.activeEventId = -1;
+        $scope.selectedEvent = null;
 
         $scope.join = function(event) {
             someLog("joining: "+event.id);
-            EventsService.join(event.id, {comment: $scope.joinComment[event.id]}).then(function (data) {
+            $scope.joinErrorMessage = "";
+            $scope.joinSuccesMessage = "";
+            $scope.waiting = false;
+            EventsService.join(event.id, {comment: $scope.joinComment}).then(function (data) {
                 someLog("joined event");
-                console.log(data);
+                someLog(data);
                 if(data.data.status != "success") {
                     someLog("something went wrong!");
+                    $scope.joinErrorMessage = "Something went wrong. Please try again.";
+                    return;
                 }
                 else {
                     event.joined = true;
                 }
                 $scope.init();
+                $("#joinEventModal").modal('hide');
 
             }).catch(function (data) {
                 someLog("err join event");
@@ -56,10 +67,31 @@ angular.module('unitaste.lounge', ['ngRoute', 'ngSanitize', 'MassAutoComplete'])
         };
 
         $scope.toggleActive = function (event) {
-            $scope.activeEventId = $scope.activeEventId == event.id ? -1 : event.id;
+            if( $scope.activeEventId == event.id) {
+                $("#event" + $scope.activeEventId + " .userComments").slideUp();
+                $scope.activeEventId = -1;
+                someLog(1);
+            }
+            else {
+                $("#event" + $scope.activeEventId + " .userComments").slideUp();
+                $("#event" + event.id + " .userComments").slideDown();
+                $scope.activeEventId = event.id;
+                someLog(2);
+            }
         };
 
+        $scope.showJoinModal = function (event){
+            $scope.selectedEvent = event;
+            $("#joinEventModal").modal('show');
+        };
+        
+
         $scope.init = function (){
+            if(!$scope.isLoggedIn()) {
+                $scope.changeRoute('#/login');
+                return;
+            }
+            $scope.joinComment = "";
             EventsService.getAll().then(function (data) {
                 $scope.events = data.data.data.events;
                 someLog("loaded events");
@@ -71,6 +103,20 @@ angular.module('unitaste.lounge', ['ngRoute', 'ngSanitize', 'MassAutoComplete'])
                 $scope.activeEventId = -1;
             });
         };
+        $scope.isLoggedIn = function() {
+            return localStorage.getItem("loggedIn") != null;
+        };
+        $scope.changeRoute = function(url, forceReload) {
+            $scope = $scope || angular.element(document).scope();
+            if(forceReload || $scope.$$phase) { // that's right TWO dollar signs: $$phase
+                window.location = url;
+            } else {
+                $location.path(url);
+                $scope.$apply();
+            }
+        };
+
+
         $scope.init();
 
     });

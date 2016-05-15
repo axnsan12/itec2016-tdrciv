@@ -6,15 +6,15 @@
                 Unitaste
             </a>
         </li>
-        <li> <a href="#/view1">view1</a> </li>
-        <li> <a href="#/view2">view2</a> </li>
+        <!--<li> <a href="#/view1">view1</a> </li>-->
+        <!--<li> <a href="#/view2">view2</a> </li>-->
         <li> <a href="#/lounge" ng-if="isLoggedIn()">Lounge</a> </li>
         <li> <a href="#/login" ng-if="!isLoggedIn()" >Login</a> </li>
         <li> <a href="#/register" ng-if="!isLoggedIn()" >Register</a> </li>
         <li> <a href="#/profile" ng-if="isLoggedIn()">Profile</a> </li>
         <li> <a href="#" ng-if="isLoggedIn()" ng-click="doLogout()">Logout</a> </li>
-        <li> <a href="#" ng-click="checkLogin()">Check User Session BE</a> </li>
-        <li> <a ng-click="toggleMenu();" href="#">Hide</a> </li>
+        <!--<li> <a href="#" ng-click="checkLogin()">Check User Session BE</a> </li>-->
+        <li> <a ng-click="toggleMenu();" href="javascript:void(0);">{{menuFull?"Hide":"Show"}}</a> </li>
     </ul>
 </div>
 <!-- /#sidebar-wrapper -->

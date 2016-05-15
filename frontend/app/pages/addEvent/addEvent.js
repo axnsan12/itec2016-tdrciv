@@ -46,6 +46,7 @@ angular.module('unitaste.addEvent', ['ngRoute', 'ngSanitize', 'MassAutoComplete'
             EventsService.add(model).then(function (data) {
                 someLog("event added");
                 someLog(data);
+                $scope.model = {name:"", startDate:"11/18/2016 11:58", interests:[], comment: "" };
             }).catch(function (data) {
                 someLog("err add event");
                 someLog(data);
