@@ -90,11 +90,11 @@ def parse_interests(interests):
 			else:
 				deleted_interest_ids.append(interest['id'])
 		else:
-			interest = init.session.query(Interest).filter(Interest.interest == interest['name']).one_or_none()
-			if interest is None:
+			existent = init.session.query(Interest).filter(Interest.interest == interest['name']).one_or_none()
+			if existent is None:
 				new_interests.append(Interest(interest=interest['name']))
 			else:
-				interest_ids.append(interest.id)
+				interest_ids.append(existent.id)
 
 	return interest_ids, new_interests, deleted_interest_ids
 
