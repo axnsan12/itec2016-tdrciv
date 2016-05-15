@@ -75,7 +75,7 @@ def close_session():
 		session.close()
 		session = None
 
-cork_mysql = SqlAlchemyBackend(connection_string, initialize=True)
+cork_mysql = SqlAlchemyBackend(connection_string, initialize=True, pool_size=1, max_overflow=1)
 cork = Cork(backend=cork_mysql, email_sender='cristian.vijdea@gmail.com', smtp_url='ssl://cristian.vijdea@gmail.com:itec2016web@smtp.gmail.com:465')
 
 session_opts = {
