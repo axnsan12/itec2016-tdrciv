@@ -45,7 +45,7 @@ if 'MYSQLCONNSTR_itec2016' in os.environ:
 	arg_name = { 'Database': 'database', 'User Id': 'user', 'Data Source': 'host', 'Password': 'password' }
 	kwargs.update({ arg_name[key] : val for (key, val) in [arg.split('=') for arg in connection_string.split(';')]})
 connection_string = "mysql+mysqlconnector://{user}:{password}@{host}:{port}/{database}".format(**kwargs)
-engine = create_engine(connection_string, echo=True)
+engine = create_engine(connection_string, echo=True, maxi)
 
 plugin = sqlalchemy.Plugin(
 	engine, # SQLAlchemy engine created with create_engine function.
@@ -93,3 +93,5 @@ def wsgi_app():
 	"""Returns the application to make available through wfastcgi. This is used
 	when the site is published to Microsoft Azure."""
 	return app
+
+import routes

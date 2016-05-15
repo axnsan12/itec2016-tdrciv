@@ -6,7 +6,6 @@ from sqlalchemy.ext.associationproxy import association_proxy
 from datetime import datetime, timezone
 from init import engine
 import time
-import pytz
 
 # Configure test data SA
 Base = declarative_base()
