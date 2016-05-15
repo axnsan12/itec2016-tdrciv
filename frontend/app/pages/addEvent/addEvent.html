@@ -1,0 +1,106 @@
+
+        <div ng-controller="AddEventController">
+            <form
+                    class="form-group"
+                    ng-submit = "createEvent();" >
+                <div class="row">
+                    <div class="col-xs-5 text-right">
+                        <label for="name">Event Name:</label>
+                    </div>
+                    <div class="col-xs-7">
+                        <input id="name"
+                               type="text"
+                               ng-model="model.name"
+                               placeholder="Type the event name"
+                               class="form-control"
+                               autofocus/>
+                    </div>
+                </div>
+                <div class="row verticallySpaced">
+                    <div class="col-xs-5 text-right">
+                        <label for="startDate">Start time:</label>
+                    </div>
+                    <div class="col-xs-7">
+                        <div id="startDateInAddEventForm">
+                            <input
+                                    id="startDate"
+                                    type="text"
+                                    ng-model="model.startDate"
+                                    placeholder="Start time"
+                                    class="form-control"
+                                    autofocus/>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row verticallySpaced">
+                    <div class="col-xs-5 text-right">
+                        <label for="filterInterests">Interests:</label>
+                    </div>
+                    <div class="col-xs-7">
+                        <div class="interests-wrapper selected" ng-show="selectedExistingInterests.length || selectedNonExistingInterests.length">
+
+                            <div ng-repeat="interest in selectedExistingInterests"
+                                 class="interest well clickable"
+                                 ng-click="removeInterest(interest);">
+                                {{interest.name}}
+                            </div>
+                            <div ng-repeat="interest in selectedNonExistingInterests"
+                                 class="interest well clickable"
+                                 ng-click="removeInterest(interest);">
+                                {{interest.name}}
+                            </div>
+
+                        </div>
+                        <div>
+                            <div mass-autocomplete class="relative autocomplete" id="registerAutocomplete">
+                                <input ng-model="autoCompleteObject.value"
+                                       class="form-control"
+                                       id="filterInterests"
+                                       placeholder="Search interests"
+                                       my-enter="enterPressedInAutComplete();"
+                                       mass-autocomplete-item="autocomplete_options">
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-xs-5 text-right">
+                        <label for="addEventComment">Your comment:</label>
+                    </div>
+                    <div class="col-xs-7">
+                        <input id="addEventComment"
+                               type="text"
+                               ng-model="model.comment"
+                               placeholder="Type your comment"
+                               class="form-control"
+                               autofocus/>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-xs-5"></div>
+                    <div class="col-xs-7">
+                        <div class="error-response" ng-if="errorMessage">
+                            {{errorMessage}}
+                        </div>
+                        <div class="success-response" ng-if="successMessage">
+                            {{successMessage}}
+                        </div>
+                        <div class="waiting" ng-if="waiting">
+                            Please wait ...
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-5"></div>
+                    <div class="col-xs-7">
+                        <button class="btn btn-default" ng-disabled="waiting || isLoggedIn()">
+                            Save
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>

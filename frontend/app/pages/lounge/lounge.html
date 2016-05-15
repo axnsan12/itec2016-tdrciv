@@ -1,0 +1,76 @@
+<h1>Lounge</h1>
+
+<a data-toggle="modal" data-target="#addEventModal" href="javascript:void(0)">Add new event</a>
+
+<div class="row">
+    <div class="col-md-2"></div>
+    <div class="col-md-8">
+        <div class="events-wrapper">
+            <div ng-repeat="event in events"
+                 class="event well"
+                 ng-click="toggleActive(event);"
+                 ng-class="{'active':activeEventId == event.id}">
+
+                <div class="title">{{event.name}}</div>
+                <div class="interests-wrapper">
+                    <div ng-repeat="interest in event.interests"
+                         class="interest well"
+                         ng-class="{'common':interest.common, 'not-common':!interest.common}" >
+                        {{interest.name}}
+                    </div>
+                </div>
+                <div class="users">
+                    <div ng-repeat="user in event.users">
+                        <span class="userName">
+                            {{user.displayName}}
+                        </span>
+                        <span> zîce: </span>
+                        <span> {{user.comment}} </span>
+                    </div>
+                </div>
+
+                <div class="eventActions">
+                    <div ng-if="!event.joined">
+                        <div class="row">
+                            <div class="col-md-7">
+                                <input
+                                        ng-model="joinComment[event.id]"
+                                        class="form-control"
+                                        placeholder="Your comment" />
+                            </div>
+                            <div class="col-md-5">
+                                <button
+                                        class="btn btn-default"
+                                        ng-if="!event.joined"
+                                        ng-click="join(event);">Join</button>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-default" ng-if="event.joined" ng-click="unJoin(event);">Unjoin</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2"></div>
+</div>
+
+
+<div id="addEventModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Add new event</h4>
+            </div>
+            <div class="modal-body">
+                <div ng-include='"pages/addEvent/addEvent.html"'></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+</div>

@@ -20,10 +20,12 @@ unitaste.controller("MenuController", function($scope, UsersService) {
     };
 
     $scope.doLogout = function () {
+        localStorage.removeItem("loggedIn");
         UsersService.logout().then(function(data){
             localStorage.removeItem("loggedIn");
             console.log("logoutat");
         }).catch(function(data){
+            someLog(data);
             console.log("cant logout");
         });
     };

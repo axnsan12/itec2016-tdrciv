@@ -8,6 +8,8 @@ var unitaste = angular.module('unitaste', [
   'unitaste.login',
   'unitaste.register',
   'unitaste.profile',
+  'unitaste.lounge',
+  'unitaste.addEvent',
   'unitaste.version'
 ]).
 config(['$routeProvider', '$httpProvider', function($routeProvider, $httpProvider) {
@@ -15,15 +17,3 @@ config(['$routeProvider', '$httpProvider', function($routeProvider, $httpProvide
   $httpProvider.defaults.withCredentials = true;
 }]);
 
-unitaste.directive('myEnter', function () {
-  return function (scope, element, attrs) {
-    element.bind("keydown keypress", function (event) {
-      if(event.which === 13) {
-        scope.$apply(function (){
-          scope.$eval(attrs.myEnter);
-        });
-        event.preventDefault();
-      }
-    });
-  };
-});
