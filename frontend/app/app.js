@@ -7,9 +7,13 @@ var unitaste = angular.module('unitaste', [
   'unitaste.view2',
   'unitaste.login',
   'unitaste.register',
+  'unitaste.profile',
+  'unitaste.lounge',
+  'unitaste.addEvent',
   'unitaste.version'
 ]).
 config(['$routeProvider', '$httpProvider', function($routeProvider, $httpProvider) {
   $routeProvider.otherwise({redirectTo: '/view1'});
   $httpProvider.defaults.withCredentials = true;
 }]);
+

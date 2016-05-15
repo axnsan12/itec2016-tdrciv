@@ -1,7 +1,7 @@
 
 <div class="row">
-    <div class="col-md-4"></div>
-    <div class="well col-md-4">
+    <div class="col-md-1"></div>
+    <div class="well col-md-10">
         <div>
             <form
                     class="form-group"
@@ -21,7 +21,7 @@
                 </div>
                 <div class="row verticallySpaced">
                     <div class="col-xs-5 text-right">
-                        <label for="Username">Password:</label>
+                        <label for="password">Password:</label>
                     </div>
                     <div class="col-xs-7">
                         <input
@@ -63,6 +63,54 @@
                     </div>
                 </div>
 
+                <div class="row verticallySpaced">
+                    <div class="col-xs-5 text-right">
+                        <label for="displayName">Name:</label>
+                    </div>
+                    <div class="col-xs-7">
+                        <input
+                                id="displayName"
+                                type="text"
+                                ng-model="model.displayName"
+                                placeholder="Type your display name"
+                                class="form-control"
+                                autofocus/>
+                    </div>
+                </div>
+
+                <div class="row verticallySpaced">
+                    <div class="col-xs-5 text-right">
+                        <label for="filterInterests">Interests:</label>
+                    </div>
+                    <div class="col-xs-7">
+                       <div class="interests-wrapper selected" ng-show="selectedExistingInterests.length || selectedNonExistingInterests.length">
+
+                           <div ng-repeat="interest in selectedExistingInterests"
+                           class="interest well clickable"
+                           ng-click="removeInterest(interest);">
+                               {{interest.name}}
+                           </div>
+                           <div ng-repeat="interest in selectedNonExistingInterests"
+                                class="interest well clickable"
+                                ng-click="removeInterest(interest);">
+                               {{interest.name}}
+                           </div>
+
+                       </div>
+                        <div>
+                            <div mass-autocomplete class="relative autocomplete" id="registerAutocomplete">
+                                <input ng-model="autoCompleteObject.value"
+                                       class="form-control"
+                                       id="filterInterests"
+                                       placeholder="Search interests"
+                                       my-enter="enterPressedInAutComplete();"
+                                       mass-autocomplete-item="autocomplete_options">
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
                 <div class="row">
                     <div class="col-xs-5"></div>
                     <div class="col-xs-7">
@@ -89,5 +137,5 @@
         </div>
 
     </div>
-    <div class="col-md-4"></div>
+    <div class="col-md-1"></div>
 </div>

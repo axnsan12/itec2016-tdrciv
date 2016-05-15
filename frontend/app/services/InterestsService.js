@@ -10,4 +10,8 @@ unitaste.service("InterestsService", function ($http) {
     this.get = function (id) {
         return $http.get(backend+"interests/"+id);
     };
+
+    this.add = function (model) {
+        return $http.post(backend+"interests/", model);
+    }
 });

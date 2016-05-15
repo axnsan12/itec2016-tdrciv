@@ -33,3 +33,61 @@
   margin-top:5px;
   margin-bottom:5px;
 }
+.interests-wrapper {
+  margin:5px;
+}
+.interests-wrapper .interest{
+  display: inline-block;
+  padding:2px 5px;
+  background: #e5e5e5;
+  margin:1px;
+}
+.clickable {
+  cursor: pointer !important;
+}
+
+.event {
+  border-width: 0;
+  transition: border-width 0.5s ease-out;
+}
+
+.event.active {
+  border-width: 3px;
+  transition: border-width 0.25s ease-in;
+}
+
+.event .users{
+  max-height: 0;
+  transition: max-height 0.5s ease-out;
+  overflow: hidden;
+}
+
+.event.active .users{
+  max-height: 500px;
+  transition: max-height 0.75s ease-in;
+}
+
+.interests-wrapper .interest:hover{
+  background: #d5d5d5;
+  cursor: default;
+}
+
+.interests-wrapper .interest.common{
+  background: #B2FFB3;
+}
+.interests-wrapper .interest.not-common{
+   background: #FFD3DA;
+ }
+
+.highlight {
+  color:red;
+}
+
+.relative {
+  position: relative;
+}
+
+.autocomplete .ac-container {
+  left: 0 !important;
+  top: 34px !important;
+}
