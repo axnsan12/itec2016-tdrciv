@@ -4,7 +4,7 @@ Routes and views for the bottle application.
 
 import init
 import traceback
-from bottle import view, default_app
+from bottle import view, default_app, redirect
 from datetime import datetime
 from time import strftime
 from init import app, cork
@@ -140,7 +140,11 @@ def login():
 @app.get('/api/activate/:registration_code')
 @format_response
 def activate(registration_code):
-	cork.validate_registration(registration_code)
+	try:
+		cork.validate_registration(registration_code)
+	except:
+		pass
+	redirect('/#/login')
 	return { 'success': True }
 
 @app.post('/api/change_password')
