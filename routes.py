@@ -14,6 +14,7 @@ from model import User, Profile, Event, Interest, Comment, ProfileInterest, Even
 from datetime import timezone, datetime
 from sqlalchemy.exc import SQLAlchemyError, IntegrityError
 from sqlalchemy.orm.exc import NoResultFound
+from operator import itemgetter
 
 def format_response(func):
 	def wrapper(*args, **kwargs):
@@ -138,6 +139,17 @@ def activate(registration_code):
 	cork.validate_registration(registration_code)
 	return { 'success': True }
 
+@app.post('/api/change_password')
+@format_response
+@authorize()
+def change_password():
+	corkuser = cork.current_user
+	if cork.login(corkuser.username, request.json['currentPassword']):
+		corkuser.update(pwd=request.json['newPassword'])
+		return { 'success': True }
+	else:
+		raise AuthException("current password does not match")
+
 
 @app.get('/api/user')
 @format_response
@@ -160,6 +172,12 @@ def get_profile(user_id=-1):
 	else:
 		profile = init.session.query(Profile).filter(Profile.user_id == user_id).one()
 	return profile.tojson()
+
+@app.put('/api/profile')
+@format_response
+@authorize()
+def update_my_profile():
+	return update_profile(-1)
 
 @app.put('/api/profile/<user_id:int>')
 @format_response
@@ -222,19 +240,23 @@ def list_events():
 	joined_event_ids = { event.id for event in user.profile.events }
 	my_interest_ids = { interest.id for interest in user.profile.rel_interests }
 	for event in events:
-		js = event.tojson()
-		js['joined'] = event.id in joined_event_ids
-		js['users'] = [ { 'user_id': profile.user_id, 'username': profile.user.username, 'displayName': profile.name, 
+		ev = event.tojson()
+		ev['joined'] = event.id in joined_event_ids
+		ev['users'] = [ { 'user_id': profile.user_id, 'username': profile.user.username, 'displayName': profile.name, 
 				   'comment': event.users[profile].text, 'comment_id': event.users[profile].id } for profile in event.users ]
 		interests = [ ]
+		interests_in_common = 0
 		for interest in event.rel_interests:
 			ijs = interest.tojson()
 			ijs['common'] = interest.id in my_interest_ids
+			interests_in_common += 1 if ijs['common'] else 0
 			interests.append(ijs)
-		js['interests'] = interests
-		result.append(js)
+		ev['interests'] = interests
+		ev['commonInterests'] = interests_in_common
+		ev['expired'] = event.start_time < now
+		result.append(ev)
 
-	return { 'events': result }
+	return { 'events': sorted(result, key=lambda ev: (int(ev['expired']), -1 * ev['commonInterests'], ev['startTime'])) }
 
 @app.post('/api/events')
 @format_response
@@ -272,6 +294,12 @@ def join_event(id):
 	now = datetime.utcnow().replace(tzinfo=timezone.utc)
 	if event.start_time > now:
 		comment = Comment(text=request.json['comment'])
+		if not comment:
+			return { 'status': 'error', 'message': 'Event join comment must not be empty', 'error': 'join_event_no_comment' }
+
+		if user.profile in event.users:
+			return { 'status': 'error', 'message': 'You have already joined this event', 'error': 'join_event_already_member' }
+
 		event.users[user.profile] = comment
 		init.session.add(event)
 		init.session.commit()
@@ -281,12 +309,28 @@ def join_event(id):
 		start = event.start_time.strftime("%Y-%m-%d %H:%M")
 		return { 'status': 'error', 'message': 'Event start time has passed (current %s vs event %s)' % (now, start), 'error': 'join_event_past_start_time' }
 
+@app.put('/api/comments/<id:int>')
+@format_response
+@authorize()
+def update_comment(id):
+	result = init.session.query(Comment).join(ProfileEvent).add_columns(Comment.id, Comment.text, ProfileEvent.profile_id, ProfileEvent.event_id).filter(Comment.id == id).one()
+	profile = current_user().profile
+	if profile.id != result.profile_id:
+		cork.require(role="admin")
+
+	comment = Comment(id=result.id, text=request.json['text'])
+	init.session.merge(comment)
+	init.session.commit()
+	return { 'id': comment.id, 'text': comment.text, 'profile_id': result.profile_id, 'event_id': result.event_id }
+
 @app.post('/api/events/<id:int>/unjoin')
 @format_response
 @authorize()
 def unjoin_event(id):
 	user = current_user()
 	event = init.session.query(Event).filter(Event.id == id).one()
+	if user.profile not in event.users:
+		return { 'status': 'error', 'message': 'You have not joined this event', 'error': 'unjoin_event_not_a_member' }
 	del event.users[user.profile]
 	init.session.add(event)
 

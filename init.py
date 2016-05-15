@@ -22,10 +22,16 @@ def enable_cors():
 	You need to add some headers to each request.
 	Don't use the wildcard '*' for Access-Control-Allow-Origin in production.
 	"""
-	response.headers['Access-Control-Allow-Origin'] = 'http://unified.tdr'
-	response.headers['Access-Control-Allow-Credentials'] = "true";
-	response.headers['Access-Control-Allow-Methods'] = 'POST, GET, OPTIONS'
-	response.headers['Access-Control-Allow-Headers'] = 'Origin, Accept, Cookie, Content-Type, X-Requested-With, X-CSRF-Token'
+	allowed = [ 'http://unified.tdr', 'http://unitaste.tdr', 'http://unitaste.ro' ]
+	origin = request.get_header("Origin")
+	if origin is not None:
+		for host in allowed:
+			if origin.startswith(host):
+				response.headers['Access-Control-Allow-Origin'] = host;
+				response.headers['Access-Control-Allow-Credentials'] = "true";
+				response.headers['Access-Control-Allow-Methods'] = 'POST, GET, PUT, OPTIONS'
+				response.headers['Access-Control-Allow-Headers'] = 'Origin, Accept, Cookie, Content-Type, X-Requested-With, X-CSRF-Token'
+				break
 
 @app.route("/<url:re:.+>", method=['OPTIONS'])
 def allow_options(url):
@@ -52,7 +58,7 @@ plugin = sqlalchemy.Plugin(
 
 app.install(plugin)
 
-_sessionmaker = sessionmaker(bind=engine)
+_sessionmaker = sessionmaker(bind=engine, autoflush=False)
 session = None # type: Session
 @app.hook('before_request')
 def open_session():
@@ -70,7 +76,7 @@ def close_session():
 		session = None
 
 cork_mysql = SqlAlchemyBackend(connection_string, initialize=True)
-cork = Cork(backend=cork_mysql, email_sender='danpulea12@gmail.com', smtp_url='ssl://danpulea12@gmail.com:parola12@smtp.gmail.com:465')
+cork = Cork(backend=cork_mysql, email_sender='cristian.vijdea@gmail.com', smtp_url='ssl://cristian.vijdea@gmail.com:itec2016web@smtp.gmail.com:465')
 
 session_opts = {
 	'session.cookie_expires': True,
