@@ -26,6 +26,10 @@ angular.module('unitaste.addEvent', ['ngRoute', 'ngSanitize', 'MassAutoComplete'
 
         injectInterestAutoComplete(this, $scope, UsersService, InterestsService);
 
+        $scope.isLoggedIn = function () {
+            return localStorage.getItem("loggedIn") != null;
+        };
+
         someLog("add event controller loaded");
 
         $scope.createEvent = function () {

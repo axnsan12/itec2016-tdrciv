@@ -3,8 +3,8 @@
 // Declare app level module which depends on views, and components
 var unitaste = angular.module('unitaste', [
   'ngRoute',
-  'unitaste.view1',
-  'unitaste.view2',
+  // 'unitaste.view1',
+  // 'unitaste.view2',
   'unitaste.login',
   'unitaste.register',
   'unitaste.profile',
@@ -13,7 +13,8 @@ var unitaste = angular.module('unitaste', [
   'unitaste.version'
 ]).
 config(['$routeProvider', '$httpProvider', function($routeProvider, $httpProvider) {
-  $routeProvider.otherwise({redirectTo: '/view1'});
+  $routeProvider.otherwise({redirectTo: '/lounge'});
   $httpProvider.defaults.withCredentials = true;
 }]);
+
 

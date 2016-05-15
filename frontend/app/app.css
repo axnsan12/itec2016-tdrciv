@@ -78,17 +78,23 @@
   color: #000000;
 }
 
+.interests-wrapper .interest {
+
+}
+
 .interests-wrapper .interest:hover{
   background: #d5d5d5;
   cursor: default;
 }
 
 .interests-wrapper .interest.common{
-  background: #B2FFB3;
+  /*background: #B2FFB3;*/
+
+  background-color: #fe7e13;
 }
 .interests-wrapper .interest.not-common{
    /*background: #FFD3DA;*/
-  background-color: #fe7e13;
+  background-color: #a2a7b3;
  }
 
 .highlight {
@@ -114,3 +120,21 @@
 .event.expired {
 
 }
+
+.addNewEvent {
+  /*background-color: #fe7e13;*/
+}
+h1, h2{
+  color: #fe7e13;
+}
+
+.navbar-inverse .navbar-nav > li > a,
+.navbar-brand{
+  color: #fe7e13 !important;
+}
+
+.navbar-inverse .navbar-nav > li > a:hover {
+  color:white !important;
+}
+
+
